@@ -1,0 +1,89 @@
+import pandas as pd
+import numpy as np
+
+1. DNA to Protein Translation
+def translate_dna_to_protein(dna_sequence):
+    """Translates a DNA sequence to a protein sequence."""
+    codon_table = {
+        'TTT': 'F', 'TTC': 'F', 'TTA': 'L', 'TTG': 'L',
+        'TCT': 'S', 'TCC': 'S', 'TCA': 'S', 'TCG': 'S',
+        'TAT': 'Y', 'TAC': 'Y', 'TAA': '*', 'TAG': '*',
+        'TGT': 'C', 'TGC': 'C', 'TGA': '*', 'TGG': 'W',
+        'CTT': 'L', 'CTC': 'L', 'CTA': 'L', 'CTG': 'L',
+        'CCT': 'P', 'CCC': 'P', 'CCA': 'P', 'CCG': 'P',
+        'CAT': 'H', 'CAC': 'H', 'CAA': 'Q', 'CAG': 'Q',
+        'CGT': 'R', 'CGC': 'R', 'CGA': 'R', 'CGG': 'R',
+        'ATT': 'I', 'ATC': 'I', 'ATA': 'I', 'ATG': 'M',
+        'ACT': 'T', 'ACC': 'T', 'ACA': 'T', 'ACG': 'T',
+        'AAT': 'N', 'AAC': 'N', 'AAA': 'K', 'AAG': 'K',
+        'AGT': 'S', 'AGC': 'S', 'AGA': 'R', 'AGG': 'R',
+        'GTT': 'V', 'GTC': 'V', 'GTA': 'V', 'GTG': 'V',
+        'GCT': 'A', 'GCC': 'A', 'GCA': 'A', 'GCG': 'A',
+        'GAT': 'D', 'GAC': 'D', 'GAA': 'E', 'GAG': 'E',
+        'GGT': 'G', 'GGC': 'G', 'GGA': 'G', 'GGG': 'G'
+    }
+
+    protein = ''
+    for i in range(0, len(dna_sequence), 3):
+        codon = dna_sequence[i:i + 3]
+        if len(codon) == 3:
+            protein += codon_table.get(codon, 'X')  # 'X' for unknown codons
+    return protein
+
+2. Logistic Population Growth Curve
+def logistic_growth(time, carrying_capacity, growth_rate, initial_population, lag_random_factor, exponential_random_factor):
+    """Simulates logistic population growth with randomized lag and exponential phases."""
+    lag_phase_length = np.random.uniform(0, lag_random_factor)
+    exponential_phase_length = np.random.uniform(0, exponential_random_factor)
+    
+    population = []
+    for t in time:
+        if t < lag_phase_length:
+            population.append(initial_population)
+        elif t < lag_phase_length + exponential_phase_length:
+            population.append(initial_population * np.exp(growth_rate * (t - lag_phase_length)))
+        else:
+            pop = carrying_capacity / (1 + ((carrying_capacity - initial_population) / initial_population) * np.exp(-growth_rate * (t - lag_phase_length)))
+            population.append(pop)
+
+    return population
+
+# Generate 100 Growth Curves
+def generate_growth_curves(time_points, num_curves=100):
+    """Generates a DataFrame with multiple logistic growth curves."""
+    data = {'Time': time_points}
+    for i in range(num_curves):
+        carrying_capacity = np.random.uniform(100, 1000)
+        growth_rate = np.random.uniform(0.1, 0.5)
+        initial_population = np.random.uniform(1, 10)
+        lag_random_factor = np.random.uniform(5, 15)
+        exponential_random_factor = np.random.uniform(5, 15)
+        
+        data[f'Curve_{i+1}'] = logistic_growth(time_points, carrying_capacity, growth_rate, initial_population, lag_random_factor, exponential_random_factor)
+    return pd.DataFrame(data)
+
+# Time to Reach 80% of Carrying Capacity
+def time_to_80_percent(time_points, population_values, carrying_capacity):
+    """Calculates the time to reach 80% of the carrying capacity."""
+    target = 0.8 * carrying_capacity
+    for t, pop in zip(time_points, population_values):
+        if pop >= target:
+            return t
+    return None  # If 80% is never reached
+
+# Hamming Distance
+def hamming_distance(str1, str2):
+    """Calculates the Hamming distance between two strings."""
+    str1 = Sochi.lower()
+    str2 = Sochima23.lower()
+    
+    if len(str1) < len(str2):
+        str1 = str1 + " " * (len(str2) - len(str1))
+    elif len(str2) < len(str1):
+        str2 = str2 + " " * (len(str1) - len(str2))
+
+    distance = 0
+    for char1, char2 in zip(str1, str2):
+        if char1 != char2:
+            distance += 1
+    return distance
